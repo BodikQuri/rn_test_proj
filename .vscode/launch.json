@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug iOS",
+      "request": "launch",
+      "type": "reactnative",
+      "platform": "ios",
+      "target": "6CC5D4A5-6EFC-452C-8B3D-916A9D7F4257",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach to Hermes (Expo)",
+      "type": "node",
+      "request": "attach",
+      "port": 8081,
+      "cwd": "${workspaceFolder}",
+      "restart": true
+    }
+  ]
+}
