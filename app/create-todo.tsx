@@ -5,7 +5,14 @@ import { COLORS } from "@/consts/ui";
 import { Todo } from "@/types/todo";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useColorPicker } from "./color-context";
 import { useTodoContext } from "./todo-context";
 
 export default function CreateTodo() {
@@ -15,6 +22,7 @@ export default function CreateTodo() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [backgroundColor, setBackgroundColor] = useState("#E8E8E8");
 
   // Завантажуємо дані todo якщо редагуємо
   useEffect(() => {
@@ -23,9 +31,17 @@ export default function CreateTodo() {
       if (todoToEdit) {
         setTitle(todoToEdit.title);
         setDescription(todoToEdit.description || "");
+        setBackgroundColor(todoToEdit.backgroundColor || "#E8E8E8");
       }
     }
   }, [todoId, todos]);
+
+  // Отримуємо колір з color-picker
+  useEffect(() => {
+    if (params.selectedColor) {
+      setBackgroundColor(params.selectedColor as string);
+    }
+  }, [params.selectedColor]);
 
   const handleCreate = () => {
     if (title.trim() === "") return;
@@ -35,6 +51,7 @@ export default function CreateTodo() {
       updateTodo(todoId, {
         title: title.trim(),
         description: description.trim(),
+        backgroundColor,
       });
     } else {
       // Режим створення
@@ -43,11 +60,23 @@ export default function CreateTodo() {
         description: description.trim(),
         id: Date.now().toString(),
         completed: false,
+        backgroundColor,
       };
       addTodo(todo);
     }
 
     router.back();
+  };
+
+  const { setOnColorPick } = useColorPicker();
+
+  const handleColorPicker = () => {
+    // задаємо callback - обгортаємо у функцію щоб React не думав що це updater
+    setOnColorPick(() => (selectedColor: string) => {
+      setBackgroundColor(selectedColor); // отримаємо обране значення
+    });
+
+    router.push("/color-picker");
   };
 
   const handleCancel = () => {
@@ -85,6 +114,24 @@ export default function CreateTodo() {
               multiline
               numberOfLines={4}
             />
+          </View>
+
+          <View style={styles.fieldContainer}>
+            <StyledText style={styles.label}>Колір фону</StyledText>
+            <TouchableOpacity
+              style={styles.colorPickerButton}
+              onPress={handleColorPicker}
+            >
+              <View
+                style={[
+                  styles.colorPreview,
+                  { backgroundColor: backgroundColor },
+                ]}
+              />
+              <StyledText style={styles.colorText}>
+                {backgroundColor}
+              </StyledText>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -155,5 +202,27 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+  },
+  colorPickerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    backgroundColor: COLORS.secondary_background,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.primary_text + "20",
+    gap: 12,
+  },
+  colorPreview: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.primary_text + "20",
+  },
+  colorText: {
+    fontSize: 16,
+    color: COLORS.primary_text,
+    fontWeight: "600",
   },
 });

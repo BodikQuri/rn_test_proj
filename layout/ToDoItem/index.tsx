@@ -20,6 +20,25 @@ interface TodoItemProps {
   isDeleting?: boolean;
 }
 
+// Функція для розрахунку контрастного кольору тексту
+const getContrastColor = (backgroundColor?: string): string => {
+  if (!backgroundColor) return COLORS.primary_text;
+
+  // Видаляємо # з hex
+  const hex = backgroundColor.replace("#", "");
+
+  // Конвертуємо hex в RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Розраховуємо яскравість (за формулою luminance)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Якщо фон світлий - темний текст, якщо темний - світлий
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+};
+
 const ToDoItem = ({
   item,
   onToggle,
@@ -31,6 +50,9 @@ const ToDoItem = ({
   const scale = useSharedValue(1);
   const height = useSharedValue(90);
   const translateX = useSharedValue(0);
+
+  // Розраховуємо контрастний колір
+  const textColor = getContrastColor(item.backgroundColor);
 
   useEffect(() => {
     opacity.value = withTiming(item.completed ? 0.5 : 1, { duration: 300 });
@@ -73,12 +95,17 @@ const ToDoItem = ({
   const textStyle = useAnimatedStyle(() => ({
     textDecorationLine: item.completed ? "line-through" : "none",
     opacity: opacity.value,
+    color: textColor,
   }));
 
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
-        style={[styles.container, animatedStyle]}
+        style={[
+          styles.container,
+          animatedStyle,
+          item.backgroundColor && { backgroundColor: item.backgroundColor },
+        ]}
         layout={LinearTransition.duration(300)}
       >
         <StyledCheckbox
