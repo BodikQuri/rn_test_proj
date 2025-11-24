@@ -104,7 +104,10 @@ export default function ColorPicker() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"dark-content"} />
-      <ScrollView style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+      >
         <View style={styles.header}>
           <StyledText style={styles.headerTitle}>Вибір кольору</StyledText>
         </View>
@@ -258,6 +261,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   header: {
     paddingTop: 80,
     paddingBottom: 20,
@@ -271,6 +277,8 @@ const styles = StyleSheet.create({
   },
   form: {
     padding: 20,
+    flex: 1,
+    justifyContent: "space-evenly",
   },
   previewContainer: {
     marginBottom: 32,
@@ -300,6 +308,7 @@ const styles = StyleSheet.create({
   },
   fieldContainer: {
     marginBottom: 32,
+    alignSelf: "stretch",
   },
   label: {
     fontSize: 16,
@@ -318,9 +327,11 @@ const styles = StyleSheet.create({
   },
   slidersContainer: {
     gap: 24,
+    alignSelf: "stretch",
   },
   sliderContainer: {
     gap: 8,
+    alignSelf: "stretch",
   },
   sliderHeader: {
     flexDirection: "row",
