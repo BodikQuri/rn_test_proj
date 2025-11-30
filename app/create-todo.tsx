@@ -2,6 +2,7 @@ import { StyledButton } from "@/components/StyledButton";
 import { StyledInput } from "@/components/StyledInput";
 import { StyledText } from "@/components/StyleText";
 import { COLORS } from "@/consts/ui";
+import { useTranslation } from "@/locales";
 import { Todo } from "@/types/todo";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ export default function CreateTodo() {
   const params = useLocalSearchParams();
   const todoId = params.todoId as string | undefined;
   const { addTodo, updateTodo, todos } = useTodoContext();
+  const t = useTranslation();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -89,15 +91,17 @@ export default function CreateTodo() {
       <ScrollView style={styles.content}>
         <View style={styles.header}>
           <StyledText style={styles.headerTitle}>
-            {todoId ? "Редагувати задачу" : "Нова задача"}
+            {todoId ? t.createTodo.editTitle : t.createTodo.newTitle}
           </StyledText>
         </View>
 
         <View style={styles.form}>
           <View style={styles.fieldContainer}>
-            <StyledText style={styles.label}>Назва</StyledText>
+            <StyledText style={styles.label}>
+              {t.createTodo.titleLabel}
+            </StyledText>
             <StyledInput
-              placeholder="Введіть назву задачі..."
+              placeholder={t.createTodo.titlePlaceholder}
               value={title}
               onChangeText={setTitle}
               style={styles.input}
@@ -105,9 +109,11 @@ export default function CreateTodo() {
           </View>
 
           <View style={styles.fieldContainer}>
-            <StyledText style={styles.label}>Опис</StyledText>
+            <StyledText style={styles.label}>
+              {t.createTodo.descriptionLabel}
+            </StyledText>
             <StyledInput
-              placeholder="Введіть опис задачі..."
+              placeholder={t.createTodo.descriptionPlaceholder}
               value={description}
               onChangeText={setDescription}
               style={StyleSheet.flatten([styles.input, styles.textArea])}
@@ -117,7 +123,9 @@ export default function CreateTodo() {
           </View>
 
           <View style={styles.fieldContainer}>
-            <StyledText style={styles.label}>Колір фону</StyledText>
+            <StyledText style={styles.label}>
+              {t.createTodo.colorLabel}
+            </StyledText>
             <TouchableOpacity
               style={styles.colorPickerButton}
               onPress={handleColorPicker}
@@ -138,13 +146,13 @@ export default function CreateTodo() {
 
       <View style={styles.footer}>
         <StyledButton
-          title="Скасувати"
+          title={t.common.cancel}
           variant="secondary"
           onPress={handleCancel}
           style={styles.button}
         />
         <StyledButton
-          title={todoId ? "Зберегти" : "Створити"}
+          title={todoId ? t.createTodo.save : t.createTodo.create}
           onPress={handleCreate}
           style={styles.button}
         />

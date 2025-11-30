@@ -1,5 +1,6 @@
 import { StyledText } from "@/components/StyleText";
 import { COLORS } from "@/consts/ui";
+import { useTranslation } from "@/locales";
 import { StyleSheet, View } from "react-native";
 
 interface HeaderProps {
@@ -8,6 +9,7 @@ interface HeaderProps {
 }
 
 const Header = ({ completedCount = 0, totalCount = 0 }: HeaderProps) => {
+  const t = useTranslation();
   const currentDate = new Date().toLocaleString("en", {
     month: "long",
     day: "numeric",
@@ -23,12 +25,12 @@ const Header = ({ completedCount = 0, totalCount = 0 }: HeaderProps) => {
             color: COLORS.primary_text,
           }}
         >
-          Todo app
+          {t.todos.title}
         </StyledText>
         <StyledText>{currentDate}</StyledText>
       </View>
       <StyledText>
-        Completed {completedCount}/{totalCount}
+        {t.todos.completed} {completedCount}/{totalCount}
       </StyledText>
     </View>
   );
